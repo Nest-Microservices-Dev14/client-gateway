@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { envs } from './config/envs';
 import { Logger, ValidationPipe } from '@nestjs/common';
+import { RpcCustomExceptionFilter } from './common/exceptions/rpc-custom-exception.filter';
 
 async function bootstrap() {
   const logger = new Logger('Main client-gateway');
@@ -15,6 +16,8 @@ async function bootstrap() {
       forbidNonWhitelisted: true
     })
   );
+
+  app.useGlobalFilters( new RpcCustomExceptionFilter());
 
   await app.listen(envs.PORT);
   logger.log(`Products Microservice Running on port ${ envs.PORT }`);
