@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, Query, ParseIntPipe } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { PRODUCT_SERVICE } from 'src/config/service';
+import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -12,8 +14,8 @@ export class ProductsController {
   ){}
 
   @Post()
-  create() {
-    return `creación del producto`;
+  create(@Body() createProductDto: CreateProductDto) {
+    return this.productsClient.send({ cmd: 'create_product' }, createProductDto);
   }
 
   @Get()
@@ -34,12 +36,29 @@ export class ProductsController {
   }
 
   @Patch(':id')
-  update() {
-    return `actualizar productos`;
+  async update(@Param('id', ParseIntPipe) id: number, @Body() updateProductDto: UpdateProductDto) {
+
+    try {
+      return await firstValueFrom(
+        this.productsClient.send({ cmd: 'update_product' }, {
+          id,
+          ...updateProductDto
+        })
+      );
+    } catch (error) {
+      throw new RpcException(error);
+    }
+
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return `Eliminar producto por Id ${id}`;
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return await firstValueFrom(
+        this.productsClient.send({ cmd: 'remove_product' }, { id })
+      );
+    } catch (error) {
+      throw new RpcException(error);
+    }
   }
 }
