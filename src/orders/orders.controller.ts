@@ -5,6 +5,7 @@ import { ORDER_SERVICE } from 'src/config/service';
 import { firstValueFrom } from 'rxjs';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { StatusDto } from './dto/status-dto';
+import { OrderPaginationDto } from './dto/order-pagination.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -18,8 +19,8 @@ export class OrdersController {
   }
 
   @Get()
-  findAll(@Query() paginationDto: PaginationDto) {
-    return this.ordersClient.send('findAllOrders', paginationDto);
+  findAll(@Query() orderPaginationDto: OrderPaginationDto) {
+    return this.ordersClient.send('findAllOrders', orderPaginationDto);
   }
 
   @Get('id/:id')
