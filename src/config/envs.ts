@@ -3,16 +3,12 @@ import * as joi from "joi";
 
 interface EnvVars {
     PORT: number,
-    NATS_SERVERS: string[],
-    ordersMicroserviceHost: string,
-    ordersMicroservicePort: number,
+    NATS_SERVERS: string[]
 }
 
 const envsSchema = joi.object({
     PORT: joi.number().required(),
-    NATS_SERVERS: joi.array().items( joi.string() ).required(),
-    ordersMicroserviceHost: joi.string().required(),
-    ordersMicroservicePort: joi.number().required(),
+    NATS_SERVERS: joi.array().items( joi.string() ).required()
 })
 .unknown(true);
 
@@ -27,7 +23,5 @@ const envVars: EnvVars = value;
 
 export const envs = {
     PORT: envVars.PORT,
-    natsServer: envVars.NATS_SERVERS,
-    ordersMicroserviceHost: envVars.ordersMicroserviceHost,
-    ordersMicroservicePort: envVars.ordersMicroservicePort
+    natsServer: envVars.NATS_SERVERS
 }

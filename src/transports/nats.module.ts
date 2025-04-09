@@ -4,16 +4,27 @@ import { envs } from 'src/config/envs';
 import { NATS_SERVERS } from 'src/config/service';
 
 @Module({
-    imports: [
-        ClientsModule.register([
-            { 
-              name: NATS_SERVERS, 
-              transport: Transport.NATS,
-              options: {
-                servers: envs.natsServer
-              }
+  imports: [
+      ClientsModule.register([
+          { 
+            name: NATS_SERVERS, 
+            transport: Transport.NATS,
+            options: {
+              servers: envs.natsServer
             }
-        ])
-    ]
+          }
+      ])
+  ],
+  exports: [
+    ClientsModule.register([
+      { 
+        name: NATS_SERVERS, 
+        transport: Transport.NATS,
+        options: {
+          servers: envs.natsServer
+        }
+      }
+    ])
+  ],
 })
 export class NatsModule {}
