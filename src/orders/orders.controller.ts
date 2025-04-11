@@ -14,13 +14,27 @@ export class OrdersController {
   ) {}
 
   @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.client.send('createOrder', createOrderDto);
+  async create(@Body() createOrderDto: CreateOrderDto) {
+    try {
+      const orders = await firstValueFrom(
+        this.client.send('createOrder', createOrderDto)
+      )
+      return orders;
+    } catch (error) {
+      throw new RpcException(error);
+    }
   }
 
   @Get()
-  findAll(@Query() orderPaginationDto: OrderPaginationDto) {
-    return this.client.send('findAllOrders', orderPaginationDto);
+  async findAll(@Query() orderPaginationDto: OrderPaginationDto) {
+    try {
+      const orders = await firstValueFrom(
+        this.client.send('findAllOrders', orderPaginationDto)
+      )
+      return orders;
+    } catch (error) {
+      throw new RpcException(error);
+    }
   }
 
   @Get('id/:id')
@@ -43,14 +57,20 @@ export class OrdersController {
   }
 
   @Patch(':id')
-  changeStatus(
+  async changeStatus(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() statusDto: StatusDto
   ){
-    return this.client.send('changeOrderStatus', {
-      id,
-      status: statusDto.status
-    });
+    try {
+      return await firstValueFrom(
+        this.client.send('changeOrderStatus', {
+          id,
+          status: statusDto.status
+        })
+      )
+    } catch (error) {
+      throw new RpcException(error);
+    }
   }
 
 }
